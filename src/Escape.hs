@@ -1,4 +1,4 @@
-module Hangman where
+module Escape where
 
 import Data.List
 import Data.Char
@@ -9,7 +9,11 @@ type Guesses = (String, Int)
 
 setupLetterBoard :: String -> LetterBoard
 setupLetterBoard [] = []
-setupLetterBoard (x : xs) = "*" ++ setupLetterBoard xs
+setupLetterBoard (x : xs) = 
+    if x == ' ' then
+        " " ++ setupLetterBoard xs
+    else
+        "*" ++ setupLetterBoard xs
 
 checkOneChar :: String -> Bool
 checkOneChar (x : xs) =
@@ -46,7 +50,7 @@ checkGuessInList _ _ = False
 
 updateGuesses :: String -> LetterBoard-> Guesses -> String -> Guesses
 updateGuesses gamePhrase currentLetterBoard (guessList, i) guess =
-    if checkGuessInList (currentLetterBoard ++ guessList) guess then -- Already guess
+    if checkGuessInList (currentLetterBoard ++ guessList) guess then -- Already guessed
         (guessList, i)
     else if checkGuessInList gamePhrase guess then -- correct guess
         (guessList, i)
@@ -56,36 +60,16 @@ updateGuesses gamePhrase currentLetterBoard (guessList, i) guess =
 
 updateLetterBoard :: String -> LetterBoard -> String -> LetterBoard
 updateLetterBoard (x : xs) (y : ys) (guess : guesses) =
-    if x == y then -- letter has been guessed
+    if x == y then -- letter has been guessed previously
         [y] ++ updateLetterBoard xs ys (guess : guesses)
     else if x == guess then -- letter hasn't been guessed, but matches gamePhrase letter
         [guess] ++ updateLetterBoard xs ys (guess : guesses)
-    else
+    else -- still unknown
         "*" ++ updateLetterBoard xs ys (guess : guesses)
 updateLetterBoard _ _ _ = []
 
-    -- putStrLn "         _.---._                                 "
-    -- putStrLn "        /       \\                               "
-    -- putStrLn "      | .- ,-   |____                            "
-    -- putStrLn "       \  *) *) (\/__/\                          "
-    -- putStrLn "        \   ^` (/\\  \-\                        "
-    -- putStrLn "         `v"uuV` )/   )-)                       "
-    -- putStrLn "          |   ^nn^   /-/   _______.-.______.-,._"
-    -- putStrLn "          |    __,-.(-(.-'(_.-----`-'------.\ \ `"
-    -- putStrLn "          |   ( (   /\  /  )               \) |"
-    -- putStrLn "          .   //(`._'`_' / )              (_|_|_"
-    -- putStrLn "             // (`._/\`-' /               `-' '-)"
-    -- putStrLn "            //   `._/ `.-'                  / |"
-    -- putStrLn "           /(      .-.\-\.-.                | |"
-    -- putStrLn "          (v)     (  ( \-)  )               ) |"
-    -- putStrLn "          //       \  `-'  /_              /  |"
-    -- putStrLn "         //      ( '`--^--'v )             )  |"
-    -- putStrLn "        //        \(      ) /  _  , , ,    \  /"
-    -- putStrLn "  \ - -'_`.        \\    //  _/ \`_/       |  |"
-    -- putStrLn "    `     `) | o__  \\  //,-'_)-'           ) |"
-    -- putStrLn "        /  \ T/|)_)  )\/(.-.____.-/ \._     \ |"
-    -- putStrLn "              / \   (_(._)_.----._)_)._)_>   \/"
-
+-- Credit to Stone Story RPG by Martian Rex and standardcombo for the ASCII art
+-- Stone Story RPG is a ASCII animated rpg/idle game on Steam https://store.steampowered.com/app/603390/Stone_Story_RPG/
 printMonster :: Int -> IO ()
 printMonster i = do
     if i == 0 then do

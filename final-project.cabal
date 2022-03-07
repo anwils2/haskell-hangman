@@ -12,7 +12,7 @@ copyright: (c) 2022 Andrew Wilson
 category: Education
 
 library
-  exposed-modules: Hangman
+  exposed-modules: Escape
   default-extensions: GADTSyntax
   build-depends: base >= 4.11 && <5
   hs-source-dirs: src
