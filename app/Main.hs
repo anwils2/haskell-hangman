@@ -9,23 +9,21 @@ promptForGamePhrase = do
   line <- getLine
   pure line
 
-playGame :: (String, String, String, Int) -> IO ()
-playGame (gamePhrase, currentLetterBoard, guessList, guesses) = do
+playGame :: (String, LetterBoard, Guesses) -> IO ()
+playGame (gamePhrase, currentLetterBoard, (guessList, guessCount)) = do
 --   printGallows guesses -- This can be ASCII output
   putStrLn currentLetterBoard
-  putStrLn ("Guesses so far: " ++ (show guesses))
+  putStrLn ("Missed guesses so far: " ++ guessList)
   if checkIfWon gamePhrase currentLetterBoard then
     putStrLn "You win!"
-  else if guesses > 10 then
+  else if guessCount > 5 then
     putStrLn "You lose."
   else do
     g <- promptGuess
-    -- updateLetterBoard
-    -- updateGuesses -- just a inline increment?
-    -- updateGuessList
-    playGame(gamePhrase, (updateLetterBoard gamePhrase currentLetterBoard g), [], guesses+1)
+    playGame(gamePhrase, (updateLetterBoard gamePhrase currentLetterBoard g), (updateGuesses gamePhrase currentLetterBoard (guessList, guessCount) g))
 
 main :: IO ()
 main = do
     phrase <- promptForGamePhrase
-    playGame (phrase, (setupLetterBoard phrase), [], 0)
+    fakeClearTerminal
+    playGame (phrase, (setupLetterBoard phrase), ([], 0))
