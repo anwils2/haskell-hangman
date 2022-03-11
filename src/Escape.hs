@@ -4,7 +4,6 @@ import Data.List
 import Data.Char
 
 type LetterBoard = String
-
 type Guesses = (String, Int)
 
 setupLetterBoard :: String -> LetterBoard
@@ -50,9 +49,7 @@ checkGuessInList _ _ = False
 
 updateGuesses :: String -> LetterBoard-> Guesses -> String -> Guesses
 updateGuesses gamePhrase currentLetterBoard (guessList, i) guess =
-    if checkGuessInList (currentLetterBoard ++ guessList) guess then -- Already guessed
-        (guessList, i)
-    else if checkGuessInList gamePhrase guess then -- correct guess
+    if checkGuessInList (currentLetterBoard ++ guessList ++ gamePhrase) guess then -- Already guessed or correct guess
         (guessList, i)
     else -- incorrect guess
         (guessList ++ guess, i+1)
@@ -61,9 +58,9 @@ updateGuesses gamePhrase currentLetterBoard (guessList, i) guess =
 updateLetterBoard :: String -> LetterBoard -> String -> LetterBoard
 updateLetterBoard (x : xs) (y : ys) (guess : guesses) =
     if x == y then -- letter has been guessed previously
-        [y] ++ updateLetterBoard xs ys (guess : guesses)
+        y : updateLetterBoard xs ys (guess : guesses)
     else if x == guess then -- letter hasn't been guessed, but matches gamePhrase letter
-        [guess] ++ updateLetterBoard xs ys (guess : guesses)
+        guess : updateLetterBoard xs ys (guess : guesses)
     else -- still unknown
         "*" ++ updateLetterBoard xs ys (guess : guesses)
 updateLetterBoard _ _ _ = []

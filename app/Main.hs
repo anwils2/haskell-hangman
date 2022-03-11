@@ -4,7 +4,7 @@ import Escape
 
 promptForGamePhrase :: IO String
 promptForGamePhrase = do
-  putStrLn "Which should the game phrase be?"
+  putStrLn "Which should the game winning escape phrase be?"
   putStrLn "Enter any phrase:"
   line <- getLine
   pure line
@@ -13,7 +13,7 @@ playGame :: (String, LetterBoard, Guesses) -> IO ()
 playGame (gamePhrase, currentLetterBoard, (guessList, guessCount)) = do
   printMonster guessCount
   putStrLn " "
-  putStrLn ("Escape word: " ++ currentLetterBoard)
+  putStrLn ("Escape phrase: " ++ currentLetterBoard)
   putStrLn ("Missed guesses so far: " ++ guessList)
   if checkIfWon gamePhrase currentLetterBoard then
     putStrLn ("You cry out the magical phrase '" ++ gamePhrase ++ "' and escape!")
